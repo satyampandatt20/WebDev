@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+
+        {% include 'navbar.html' %}
+
+        <main class="feed">
+          {% for post in all_posts %}
+            <section class="photo">
+                <header class="photo__header">
+                    <div class="photo__header-column">
+                        <a href="{% url 'profile:profile' post.user %}">
+                          {% if post.user.profile.picture %}
+                          <img class="photo__avatar" src="{{ post.user.profile.picture.url }}" />
+                          {% else %}
+                          <img class="photo__avatar" src="{% static './images/default.jpg'%}" />
+                          {% endif %}
+                        </a>
+                    </div>
+                    <div class="photo__header-column">
+                        <a href="{% url 'profile:profile' post.user %}"><span class="photo__username">{{ post.user.username }}</span></a>
+                        {% if post.location %}
+                        <span class="photo__location">{{ post.location }}</span>
+                        {% endif %}
+                    </div>
+                </header>
+                <div class="photo__file-container">
+                    <img class="photo__file" src="{{ post.photo.url }}" />
+                </div>
+                <div class="photo__info">
+                    <div class="photo__icons">
+                        <span class="photo__icon">
+                            <a href="{% url 'reaction:likes' post.id %}">
+                              {% if like_status == True %}
+                              <i class="fa fa-heart-o heart fa-lg"></i>
+                              {% else %}
+                              <i class="fa heart-red fa-heart heart fa-lg"></i>
+                              {% endif %}
+                            </a>
+                        </span>
+                        <span class="photo__icon">
+                            <a href="{% url 'post:post_details' post.id %}"><i class="fa fa-comment-o fa-lg"></i></a>
+                        </span>
+                    </div>
+                    <span class="photo__time-ago">{{ post.created_at|naturaltime }}</span>
+                    <span class="photo__likes">{{ post.likes }} likes</span>
+                    <ul class="photo__comments">
+                        <li class="photo__comment">
+                            <a href="{% url 'profile:profile' post.user %}"><span class="photo__comment-author">{{ post.user.username }}</span></a>
+                            {% if post.caption %}
+                            {{ post.caption }}
+                            {% endif %}
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+          {% endfor %}
+
+        </main>
+
+{% endblock %}
